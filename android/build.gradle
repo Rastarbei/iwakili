@@ -1,0 +1,44 @@
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.buildDir = "../build"
+
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+
+    // This is the CRITICAL part:
+    // It injects the 'flutter' property BEFORE the plugin tries to read it.
+    if (project.name != "app") {
+        project.beforeEvaluate {
+            if (!project.hasProperty('flutter')) {
+                project.extensions.add('flutter', [
+                        compileSdkVersion: 35,
+                        minSdkVersion: 21,
+                        targetSdkVersion: 34
+                ])
+            }
+        }
+    }
+
+    afterEvaluate { project ->
+        if (project.hasProperty('android')) {
+            project.android {
+                if (compileSdkVersion == null) {
+                    compileSdkVersion 35
+                }
+            }
+        }
+    }
+}
+
+subprojects {
+    project.evaluationDependsOn(":app")
+}
+
+tasks.register("clean", Delete) {
+    delete rootProject.buildDir
+}

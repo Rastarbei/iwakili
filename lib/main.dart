@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:i_wakili/Auth/auth_gate.dart';
 import 'package:i_wakili/screens/welcome_screen.dart';
@@ -7,11 +8,11 @@ import 'package:i_wakili/screens/welcome_screen.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  await dotenv.load(fileName: ".env");
 
   await Supabase.initialize(
-    url: 'https://aphmcacwbrtxcpabyuef.supabase.co',
-    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFwaG1jYWN3YnJ0eGNwYWJ5dWVmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYyNTg2MDMsImV4cCI6MjA5MTgzNDYwM30.4E7hF-LqGapJ8BjzjjyBLEYbUBWHBZTv61Q3bFoPLj4',
-
+    url: dotenv.env['SUPABASE_URL'] ?? '',
+    anonKey: dotenv.env['SUPABASE_ANON_KEY'] ?? '',
   );
 
   runApp(const MyApp());
